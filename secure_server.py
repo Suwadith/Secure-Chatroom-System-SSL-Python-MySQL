@@ -5,14 +5,16 @@ import ssl
 # localhost
 host_address = '127.0.0.1'
 port_number = 55656
+
+# ssl certificates and rsa key
 server_cert = 'resources/server.crt'
 server_key = 'resources/server.key'
-client_certs = 'resources/client.crt'
+client_cert = 'resources/client.crt'
 
 context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
 context.verify_mode = ssl.CERT_REQUIRED
 context.load_cert_chain(certfile=server_cert, keyfile=server_key)
-context.load_verify_locations(cafile=client_certs)
+context.load_verify_locations(cafile=client_cert)
 
 # AF_INET = Internet Socket
 # SOCK_STREAM = TCP protocol
@@ -34,14 +36,12 @@ def announce(message):
 # Try to receive messages from individual clients
 def handle(client):
     while True:
+        
         # If possible announce the message to everyone on the chatroom
         try:
             message = client.recv(1024)
-            # index = clients.index(client)
-            # username = usernames[index]
-            # print(usernamemessage)
-            # announce(username + ": " + message)
             announce(message)
+
         # If not possible (exception thrown) then cut the connection and broadcast that the user has left
         except:
             index = clients.index(client)
@@ -58,7 +58,10 @@ def receive():
     while True:
         client_socket, address = server.accept()
         print("Connected to " + str(address))
+
+        # wrapping sockets using ssl socket objects
         client = context.wrap_socket(client_socket, server_side=True)
+
         # Get the username from the client and store it
         client.send("USERNAME".encode('ascii'))
         username = client.recv(1024).decode('ascii')
