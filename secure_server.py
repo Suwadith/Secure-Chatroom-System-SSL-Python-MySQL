@@ -6,6 +6,7 @@ import ssl
 import time
 
 import database_handler
+import log_writer
 
 host_address = '127.0.0.1'
 port_number = 55656
@@ -41,7 +42,6 @@ def announce(message):
 def handle(client):
     while True:
 
-        # If possible announce the message to everyone on the chatroom
         try:
             msg = message = client.recv(1024)
 
@@ -63,7 +63,11 @@ def handle(client):
                 else:
                     client.send('Command was refused!'.encode('ascii'))
             else:
+                # announce the message to everyone on the chatroom
                 announce(message)
+
+                # store public chat into the database
+                database_handler.store_public_chat(msg.decode('ascii').split(": ")[0], msg.decode('ascii').split(": ")[1])
 
         # If not possible (exception thrown) then cut the connection and broadcast that the user has left
         except:
@@ -82,10 +86,12 @@ def receive():
     while True:
         client_socket, address = server.accept()
         print("Connected to " + str(address))
+        log_writer.write_to_log("Connected to " + str(address))
 
         # wrapping sockets using ssl socket objects
         client = context.wrap_socket(client_socket, server_side=True)
 
+        # Get the option to login/register from the client and store it
         client.send("LOGIN_REGISTER".encode('ascii'))
         login_or_register = client.recv(1024).decode('ascii')
 
@@ -93,9 +99,11 @@ def receive():
         client.send("USERNAME".encode('ascii'))
         username = client.recv(1024).decode('ascii')
 
+        # Get the password from the client and store it
         client.send("PASS".encode('ascii'))
         password = client.recv(1024).decode('ascii')
 
+        # Handling login or registration process on the serverside
         if login_or_register == '1':
             result = database_handler.check_password(username, password)
             if result:
@@ -117,6 +125,9 @@ def receive():
 
         # Announce the username of the client who has just joined the chatroom to everyone
         print("Username of the client is " + str(username))
+
+        # log server messages into a txt file
+        log_writer.write_to_log("Username of the client is " + str(username))
         announce((str(username) + " joined the chatroom").encode('ascii'))
         client.send("Connected to the server".encode('ascii'))
 
@@ -149,8 +160,10 @@ def kick_user(name):
         client_to_kick.send("You have been kicked by the admin!".encode('ascii'))
         usernames.remove(name)
         announce((name + " was kicked by the admin!").encode('ascii'))
+        log_writer.write_to_log((name + " was kicked by the admin!").encode('ascii'))
         client_to_kick.close()
 
 
 print("Server is up and running...")
+log_writer.write_to_log("Server is up and running...")
 receive()

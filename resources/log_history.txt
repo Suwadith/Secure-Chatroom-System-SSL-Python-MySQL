@@ -1,3 +1,23 @@
 Test log file
 Test log file
 Test log file
+2022-02-22 11:46:03.718215 - Server is up and running...
+2022-02-22 11:46:03.718215 - Connected to ('127.0.0.1', 54690)
+2022-02-22 11:46:03.718215 - Username of the client is admin
+2022-02-22 11:51:36.101376 - Server is up and running...
+2022-02-22 11:51:36.101376 - Connected to ('127.0.0.1', 58531)
+2022-02-22 11:51:36.101376 - Username of the client is Suwadith
+2022-02-22 11:52:35.524526 - Server is up and running...
+2022-02-22 11:52:35.524526 - Connected to ('127.0.0.1', 57145)
+2022-02-22 11:52:35.524526 - Username of the client is admin
+2022-02-22 11:53:48.271858 - Server is up and running...
+2022-02-22 11:53:48.271858 - Connected to ('127.0.0.1', 57157)
+2022-02-22 11:53:48.271858 - Username of the client is admin
+2022-02-22 11:53:48.271858 - Connected to ('127.0.0.1', 57162)
+2022-02-22 11:54:08.905929 - Server is up and running...
+2022-02-22 11:54:08.905929 - Connected to ('127.0.0.1', 57166)
+2022-02-22 11:54:08.905929 - Connected to ('127.0.0.1', 57169)
+2022-02-22 11:54:08.905929 - Username of the client is admin
+2022-02-22 11:55:58.654395 - Server is up and running...
+2022-02-22 11:55:58.654395 - Connected to ('127.0.0.1', 57200)
+2022-02-22 11:55:58.654395 - Username of the client is admin

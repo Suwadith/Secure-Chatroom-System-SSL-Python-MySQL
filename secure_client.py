@@ -48,7 +48,7 @@ def receive():
         if stop_thread:
             break
 
-        # Check if it's a message or an initial username input
+        # Login/Registration client side process
         try:
             message = client.recv(1024).decode('ascii')
             if message == "LOGIN_REGISTER":

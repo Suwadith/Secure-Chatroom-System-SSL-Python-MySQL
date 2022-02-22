@@ -47,16 +47,16 @@ def register_user(username, password, user_type):
         return False
 
 
-
 def store_public_chat(username, message):
+    message = encryption.encrypt_message(message)
     sql = "INSERT into chat_history (username, message) VALUES (%s, %s)"
     val = (username, message)
     cursor.execute(sql, val)
     database.commit()
     if cursor.rowcount > 0:
-        print("message store successfully")
+        pass
     else:
-        print("something went wrong")
+        print("Unable to store public chats")
 
 
 def ban_user(username, ip_address):
