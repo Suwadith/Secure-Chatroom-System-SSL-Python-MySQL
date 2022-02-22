@@ -101,8 +101,12 @@ def write():
 
         message = str(username) + ": " + str(input(""))
 
+
+
         # handling admin functionalities
         if message[len(username) + 2:].startswith('/'):
+            # if message[len(username) + 2:].startswith('/user_list'):
+            #     client.send("USERS".encode('ascii'))
             if username == 'admin':
                 if message[len(username) + 2:].startswith('/kick'):
                     client.send(("KICK " + message[len(username) + 2 + 6:]).encode('ascii'))

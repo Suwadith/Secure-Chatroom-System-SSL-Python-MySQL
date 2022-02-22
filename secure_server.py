@@ -44,6 +44,9 @@ def handle(client):
 
         try:
             msg = message = client.recv(1024)
+            #
+            # if msg.decode('ascii').startswith('USERS'):
+            #     client.send("test")
 
             # handling kick request from admin
             if msg.decode('ascii').startswith('KICK'):
@@ -57,8 +60,8 @@ def handle(client):
             elif msg.decode('ascii').startswith('BAN'):
                 if usernames[clients.index(client)] == 'admin':
                     name_to_ban = msg.decode('ascii')[4:]
+                    ban_user(name_to_ban, client)
                     kick_user(name_to_ban)
-                    # ban_user(name_to_ban)
                     # print(name_to_ban + "has been banned!")
                 else:
                     client.send('Command was refused!'.encode('ascii'))
@@ -70,6 +73,7 @@ def handle(client):
                 database_handler.store_public_chat(msg.decode('ascii').split(": ")[0], msg.decode('ascii').split(": ")[1])
 
         # If not possible (exception thrown) then cut the connection and broadcast that the user has left
+        # Basically an automatic logout operation
         except:
             if client in clients:
                 index = clients.index(client)
@@ -123,6 +127,13 @@ def receive():
                 client.close()
                 continue
 
+        username_ban_check = database_handler.check_username_banned(username)
+        ip_ban_check = database_handler.check_ip_banned(client.getpeername()[0])
+
+        if username_ban_check and ip_ban_check:
+            kick_user(username)
+
+
         # Announce the username of the client who has just joined the chatroom to everyone
         print("Username of the client is " + str(username))
 
@@ -152,16 +163,26 @@ def receive():
 
 
 # method to handle kicking users
-def kick_user(name):
-    if name in usernames:
-        name_index = usernames.index(name)
+def kick_user(username):
+    if username in usernames:
+        name_index = usernames.index(username)
         client_to_kick = clients[name_index]
         clients.remove(client_to_kick)
         client_to_kick.send("You have been kicked by the admin!".encode('ascii'))
-        usernames.remove(name)
-        announce((name + " was kicked by the admin!").encode('ascii'))
-        log_writer.write_to_log((name + " was kicked by the admin!").encode('ascii'))
+        usernames.remove(username)
         client_to_kick.close()
+        announce((username + " was kicked by the admin!").encode('ascii'))
+        print(username + " was kicked by the admin!")
+        log_writer.write_to_log(username + " was kicked by the admin!")
+
+
+
+def ban_user(username, client):
+    database_handler.ban_user(username, client.getpeername()[0])
+    announce((username + ", " + client.getpeername()[0] + " was banned by the admin!").encode('ascii'))
+    print(username + ", " + client.getpeername()[0] + " was banned by the admin!")
+    log_writer.write_to_log(username + ", " + client.getpeername()[0] + " was banned by the admin!")
+
 
 
 print("Server is up and running...")

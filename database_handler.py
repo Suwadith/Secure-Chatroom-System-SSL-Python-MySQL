@@ -64,20 +64,30 @@ def ban_user(username, ip_address):
     val = (username, ip_address)
     cursor.execute(sql, val)
     database.commit()
+    if cursor.rowcount > 0:
+        pass
+    else:
+        print("Unable to ban user")
 
 
 def check_username_banned(username):
     sql = "SELECT * FROM ban_list WHERE username = '" + username + "'"
     cursor.execute(sql)
     result = cursor.fetchone()
-    return result
+    if result is None:
+        return False
+    else:
+        return True
 
 
 def check_ip_banned(ip_address):
     sql = "SELECT * FROM ban_list WHERE ip_address = '" + ip_address + "'"
     cursor.execute(sql)
     result = cursor.fetchone()
-    return result
+    if result is None:
+        return False
+    else:
+        return True
 
 # print(check_username("admin"))
 # register_user("Suwadith", "wdp3YttyyX/LSQ==*vrQ7f2+vY6pWnj8+h1RRmA==*Bx+z56v6FL+BZD5SVZcU0g==*5GKS7GBWeTkrZbLisz7UZg==", "user")

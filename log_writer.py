@@ -1,9 +1,7 @@
 from datetime import datetime
 
-dateTimeObj = datetime.now()
-
-
 def write_to_log(event):
+    dateTimeObj = datetime.now()
     f = open("resources/log_history.txt", "a")
     f.write("\n" + str(dateTimeObj) + " - " + event)
     f.close()

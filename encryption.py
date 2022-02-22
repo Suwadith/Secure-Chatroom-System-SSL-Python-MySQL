@@ -8,7 +8,6 @@ def encrypt_password(password):
 
 def decrypt_password(encrypted_password, password):
     decrypted_password = cryptocode.decrypt(encrypted_password, "secret_key")
-    print(decrypted_password)
     if decrypted_password == password:
         return True
     else:
