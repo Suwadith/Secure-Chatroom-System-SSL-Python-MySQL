@@ -34,6 +34,7 @@ def check_password(username, password):
 
 def register_user(username, password, user_type):
     if check_username(username) is None:
+        password = encryption.encrypt_password(password)
         sql = "INSERT into users (username, password, user_type) VALUES (%s, %s, %s)"
         val = (username, password, user_type)
         cursor.execute(sql, val)
