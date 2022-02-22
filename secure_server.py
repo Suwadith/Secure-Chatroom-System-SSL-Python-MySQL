@@ -3,6 +3,10 @@ import socket
 import ssl
 
 # localhost
+import time
+
+import database_handler
+
 host_address = '127.0.0.1'
 port_number = 55656
 
@@ -82,27 +86,45 @@ def receive():
         # wrapping sockets using ssl socket objects
         client = context.wrap_socket(client_socket, server_side=True)
 
+        client.send("LOGIN_REGISTER".encode('ascii'))
+        login_or_register = client.recv(1024).decode('ascii')
+
         # Get the username from the client and store it
         client.send("USERNAME".encode('ascii'))
         username = client.recv(1024).decode('ascii')
 
-        # handling admin login process
-        if username == 'admin':
-            client.send('PASS'.encode('ascii'))
-            password = client.recv(1024).decode('ascii')
+        client.send("PASS".encode('ascii'))
+        password = client.recv(1024).decode('ascii')
 
-            if password != 'adminpass':
-                client.send('REFUSE'.encode('ascii'))
+        if login_or_register == '1':
+            result = database_handler.check_password(username, password)
+            if result:
+                usernames.append(username)
+                clients.append(client)
+            else:
+                client.send("REFUSE".encode('ascii'))
                 client.close()
                 continue
-
-        usernames.append(username)
-        clients.append(client)
 
         # Announce the username of the client who has just joined the chatroom to everyone
         print("Username of the client is " + str(username))
         announce((str(username) + " joined the chatroom").encode('ascii'))
         client.send("Connected to the server".encode('ascii'))
+
+
+
+
+        # # handling admin login process
+        # if username == 'admin':
+        #     client.send('PASS'.encode('ascii'))
+        #     password = client.recv(1024).decode('ascii')
+        #
+        #     if password != 'adminpass':
+        #         client.send('REFUSE'.encode('ascii'))
+        #         client.close()
+        #         continue
+
+
 
         # Handle multiple client requests at the same time by using threads simultaneously
         thread = threading.Thread(target=handle, args=(client,))

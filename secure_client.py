@@ -3,6 +3,10 @@ import threading
 import ssl
 
 # Same host address and the port number which were declared in the server
+import time
+
+import login_handler
+
 host_address = '127.0.0.1'
 port_number = 55656
 server_hostname = 'example.com'
@@ -24,9 +28,14 @@ client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 client = context.wrap_socket(client_socket, server_side=False, server_hostname=server_hostname)
 client.connect((host_address, port_number))
 
-username = input("Choose a username: ")
-if username == 'admin':
-    password = input("Enter password for admin: ")
+# username = input("Choose a username: ")
+# if username == 'admin':
+#     password = input("Enter password for admin: ")
+
+user_input = login_handler.handle_login_menu_input()
+username = user_input[0]
+password = user_input[1]
+login_or_register = user_input[2]
 
 
 stop_thread = False
@@ -42,20 +51,37 @@ def receive():
         # Check if it's a message or an initial username input
         try:
             message = client.recv(1024).decode('ascii')
-            if message == 'USERNAME':
-                client.send(username.encode('ascii'))
-                next_message = client.recv(1024).decode('ascii')
-                if next_message == 'PASS':
-                    client.send(password.encode('ascii'))
-                    if client.recv(1024).decode('ascii') == 'REFUSE':
-                        print("Connection was refused! Wrong password!")
-                        stop_thread = True
-                elif next_message == 'BAN':
-                    print("Connection refused because of ban!")
-                    client.close()
-                    stop_thread = True
+            if message == "LOGIN_REGISTER":
+                client.send(login_or_register.encode('ascii'))
+                message = client.recv(1024).decode('ascii')
+                if message == "USERNAME":
+                    client.send(username.encode('ascii'))
+                    message = client.recv(1024).decode('ascii')
+                    if message == "PASS":
+                        client.send(password.encode('ascii'))
+                        message = client.recv(1024).decode('ascii')
+                        if message == "REFUSE":
+                            print("Connection was refused! Wrong password!")
+                            stop_thread = True
             else:
                 print(message)
+
+
+
+            # if message == 'USERNAME':
+            #     client.send(username.encode('ascii'))
+            #     next_message = client.recv(1024).decode('ascii')
+            #     if next_message == 'PASS':
+            #         client.send(password.encode('ascii'))
+            #         if client.recv(1024).decode('ascii') == 'REFUSE':
+            #             print("Connection was refused! Wrong password!")
+            #             stop_thread = True
+            #     elif next_message == 'BAN':
+            #         print("Connection refused because of ban!")
+            #         client.close()
+            #         stop_thread = True
+            # else:
+            #     print(message)
 
         # Close connection if any errors occurred
         except:
@@ -69,6 +95,7 @@ def write():
     while True:
         if stop_thread:
             break
+
         message = str(username) + ": " + str(input(""))
 
         # handling admin functionalities

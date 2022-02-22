@@ -1,5 +1,7 @@
 import mysql.connector
 
+import encryption
+
 database = mysql.connector.connect(
     host="localhost",
     user="admin",
@@ -17,6 +19,17 @@ def check_username(username):
     cursor.execute(sql)
     result = cursor.fetchone()
     return result
+
+
+def check_password(username, password):
+    result = check_username(username)
+    if result is None:
+        return False
+    else:
+        if encryption.decrypt_password(result[2], password):
+            return True
+        else:
+            return False
 
 
 def register_user(username, password, user_type):
@@ -67,3 +80,5 @@ def check_ip_banned(ip_address):
 # print(check_username("admin"))
 # register_user("Suwadith", "wdp3YttyyX/LSQ==*vrQ7f2+vY6pWnj8+h1RRmA==*Bx+z56v6FL+BZD5SVZcU0g==*5GKS7GBWeTkrZbLisz7UZg==", "user")
 # store_public_chat("Suwadith", "chat storage check 2")
+
+# print(check_password("admin", "admin"))
