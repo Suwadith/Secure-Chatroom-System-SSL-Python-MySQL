@@ -105,6 +105,15 @@ def receive():
                 client.send("REFUSE".encode('ascii'))
                 client.close()
                 continue
+        elif login_or_register == '2':
+            result = database_handler.register_user(username, password, 'user')
+            if result:
+                usernames.append(username)
+                clients.append(client)
+            else:
+                client.send("REG_ERROR".encode('ascii'))
+                client.close()
+                continue
 
         # Announce the username of the client who has just joined the chatroom to everyone
         print("Username of the client is " + str(username))

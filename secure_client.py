@@ -63,6 +63,9 @@ def receive():
                         if message == "REFUSE":
                             print("Connection was refused! Wrong password!")
                             stop_thread = True
+                        elif message == "REG_ERROR":
+                            print("Connection was refused! Username already taken!")
+                            stop_thread = True
             else:
                 print(message)
 

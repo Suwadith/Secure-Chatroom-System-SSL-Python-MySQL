@@ -39,11 +39,12 @@ def register_user(username, password, user_type):
         cursor.execute(sql, val)
         database.commit()
         if cursor.rowcount > 0:
-            print("user successfully registered")
+            return True
         else:
-            print("something went wrong")
+            print("something happened")
     else:
-        print("username already taken")
+        return False
+
 
 
 def store_public_chat(username, message):
