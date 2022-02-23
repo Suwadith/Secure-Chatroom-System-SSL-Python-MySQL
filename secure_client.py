@@ -81,8 +81,10 @@ def write():
 
         message = str(username) + ": " + str(input(""))
 
-        # handling admin functionalities
+        # handling special commands
         if message[len(username) + 2:].startswith('/'):
+
+            # handling admin functionalities
             if username == 'admin':
                 if message[len(username) + 2:].startswith('/kick'):
                     client.send(("KICK " + message[len(username) + 2 + 6:]).encode('ascii'))
@@ -93,7 +95,12 @@ def write():
                 elif message[len(username) + 2:].startswith('/warn'):
                     client.send(("WARN " + message[len(username) + 2 + 6:]).encode('ascii'))
             else:
-                print("Commands can only be executed by the admin")
+                print("Unauthorized command")
+
+        # handling private messages
+        elif message[len(username) + 2:].startswith('@'):
+            client.send(("PRIVATE " + message[len(username) + 2 + 1:]).encode('ascii'))
+
         else:
             client.send(message.encode('ascii'))
 

@@ -78,6 +78,17 @@ def handle(client):
                 for username in usernames:
                     client.send(username.encode('ascii'))
 
+            elif msg.decode('ascii').startswith('PRIVATE'):
+                sen_username = usernames[clients.index(client)]
+                rec_username = msg.decode('ascii')[8:].split(" ", 1)[0]
+                pvt_msg = msg.decode('ascii')[8:].split(" ", 1)[1]
+
+
+
+                # print(sen_username)
+                # print(rec_username)
+                # print(pvt_msg)
+
             else:
                 # announce the message to everyone on the chatroom
                 announce(message)
