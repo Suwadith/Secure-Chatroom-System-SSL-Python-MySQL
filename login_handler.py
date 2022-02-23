@@ -5,6 +5,7 @@ menu_options = {
     2: 'Register'
 }
 
+
 # print login menu options
 def print_login_menu():
     color_print("--------------------------", color='cyan')
@@ -22,7 +23,7 @@ def handle_login_menu_input():
         try:
             option = int(input('Enter your choice: '))
         except:
-            print('Wrong input. Please enter a number ...')
+            color_print('Invalid option. Please enter 1 or 2.', color='red')
         # Check what choice was entered and act accordingly
         if option == 1:
             username = input("Input username: ")
@@ -33,4 +34,4 @@ def handle_login_menu_input():
             password = input("Pick new password: ")
             return [username, password, "2"]
         else:
-            print('Invalid option. Please enter 1 or 2.')
+            color_print('Invalid option. Please enter 1 or 2.', color='red')

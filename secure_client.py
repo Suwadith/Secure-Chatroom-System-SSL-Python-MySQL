@@ -1,6 +1,7 @@
 import socket
 import threading
 import ssl
+from lazyme import color_print
 
 # Same host address and the port number which were declared in the server
 import time
@@ -58,17 +59,17 @@ def receive():
                         client.send(password.encode('ascii'))
                         message = client.recv(1024).decode('ascii')
                         if message == "REFUSE":
-                            print("Connection was refused! Wrong password!")
+                            color_print("Connection was refused! Wrong password!", color='red')
                             stop_thread = True
                         elif message == "REG_ERROR":
-                            print("Connection was refused! Username already taken!")
+                            color_print("Connection was refused! Username already taken!", color='red')
                             stop_thread = True
             else:
-                print(message)
+                color_print(message, color='green')
 
         # Close connection if any errors occurred
         except:
-            print("An error occurred")
+            color_print("An error occurred", color='red')
             client.close()
             break
 
@@ -95,7 +96,7 @@ def write():
                 elif message[len(username) + 2:].startswith('/warn'):
                     client.send(("WARN " + message[len(username) + 2 + 6:]).encode('ascii'))
             else:
-                print("Unauthorized command")
+                color_print("Unauthorized command", color='red')
 
         # handling private messages
         elif message[len(username) + 2:].startswith('@'):
