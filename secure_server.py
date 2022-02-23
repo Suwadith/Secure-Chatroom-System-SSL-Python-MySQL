@@ -140,7 +140,7 @@ def receive():
             # Handling login or registration process on the serverside
             if login_or_register == '1':
                 result = database_handler.check_password(username, password)
-                if result:
+                if result and username not in usernames:
                     usernames.append(username)
                     clients.append(client)
                 else:

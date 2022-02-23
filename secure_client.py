@@ -59,7 +59,7 @@ def receive():
                         client.send(password.encode('ascii'))
                         message = client.recv(1024).decode('ascii')
                         if message == "REFUSE":
-                            color_print("Connection was refused! Wrong password!", color='red')
+                            color_print("Connection was refused! Wrong password! or Already Logged in!", color='red')
                             stop_thread = True
                         elif message == "REG_ERROR":
                             color_print("Connection was refused! Username already taken!", color='red')
@@ -70,6 +70,7 @@ def receive():
         # Close connection if any errors occurred
         except:
             color_print("An error occurred", color='red')
+            stop_thread = True
             client.close()
             break
 
@@ -77,6 +78,7 @@ def receive():
 # Accepting inputs from user constantly
 def write():
     while True:
+        global stop_thread
         if stop_thread:
             break
 
@@ -103,7 +105,8 @@ def write():
             client.send(("PRIVATE " + message[len(username) + 2 + 1:]).encode('ascii'))
 
         else:
-            client.send(message.encode('ascii'))
+            if not stop_thread:
+                client.send(message.encode('ascii'))
 
 
 receive_thread = threading.Thread(target=receive)
