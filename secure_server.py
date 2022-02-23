@@ -44,9 +44,6 @@ def handle(client):
 
         try:
             msg = message = client.recv(1024)
-            #
-            # if msg.decode('ascii').startswith('USERS'):
-            #     client.send("test")
 
             # handling kick request from admin
             if msg.decode('ascii').startswith('KICK'):
@@ -65,6 +62,22 @@ def handle(client):
                     # print(name_to_ban + "has been banned!")
                 else:
                     client.send('Command was refused!'.encode('ascii'))
+
+            # handling warning request from admin
+            elif msg.decode('ascii').startswith('WARN'):
+                if usernames[clients.index(client)] == 'admin':
+                    username = msg.decode('ascii')[5:]
+                    name_index = usernames.index(username)
+                    client = clients[name_index]
+                    client.send('You have been warned by the admin!!!!'.encode('ascii'))
+                else:
+                    client.send('Command was refused!'.encode('ascii'))
+
+            # printing active user list
+            elif msg.decode('ascii').startswith('USERS'):
+                for username in usernames:
+                    client.send(username.encode('ascii'))
+
             else:
                 # announce the message to everyone on the chatroom
                 announce(message)
@@ -127,12 +140,15 @@ def receive():
                 client.close()
                 continue
 
+        # checking if the username has already been added in the DB ban list
         username_ban_check = database_handler.check_username_banned(username)
+        # checking if the username has already been added in the DB ban list
         ip_ban_check = database_handler.check_ip_banned(client.getpeername()[0])
 
+        # if IP and username are same then the user gets kicked
+        # (Using an 'or' condition will make both the IP and the username banned)
         if username_ban_check and ip_ban_check:
             kick_user(username)
-
 
         # Announce the username of the client who has just joined the chatroom to everyone
         print("Username of the client is " + str(username))
@@ -141,21 +157,6 @@ def receive():
         log_writer.write_to_log("Username of the client is " + str(username))
         announce((str(username) + " joined the chatroom").encode('ascii'))
         client.send("Connected to the server".encode('ascii'))
-
-
-
-
-        # # handling admin login process
-        # if username == 'admin':
-        #     client.send('PASS'.encode('ascii'))
-        #     password = client.recv(1024).decode('ascii')
-        #
-        #     if password != 'adminpass':
-        #         client.send('REFUSE'.encode('ascii'))
-        #         client.close()
-        #         continue
-
-
 
         # Handle multiple client requests at the same time by using threads simultaneously
         thread = threading.Thread(target=handle, args=(client,))
@@ -176,13 +177,12 @@ def kick_user(username):
         log_writer.write_to_log(username + " was kicked by the admin!")
 
 
-
+# method to handle banning users by obtaining both username and ip address
 def ban_user(username, client):
     database_handler.ban_user(username, client.getpeername()[0])
     announce((username + ", " + client.getpeername()[0] + " was banned by the admin!").encode('ascii'))
     print(username + ", " + client.getpeername()[0] + " was banned by the admin!")
     log_writer.write_to_log(username + ", " + client.getpeername()[0] + " was banned by the admin!")
-
 
 
 print("Server is up and running...")

@@ -28,10 +28,7 @@ client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 client = context.wrap_socket(client_socket, server_side=False, server_hostname=server_hostname)
 client.connect((host_address, port_number))
 
-# username = input("Choose a username: ")
-# if username == 'admin':
-#     password = input("Enter password for admin: ")
-
+# using the login menu handler to ge the initial inputs
 user_input = login_handler.handle_login_menu_input()
 username = user_input[0]
 password = user_input[1]
@@ -69,23 +66,6 @@ def receive():
             else:
                 print(message)
 
-
-
-            # if message == 'USERNAME':
-            #     client.send(username.encode('ascii'))
-            #     next_message = client.recv(1024).decode('ascii')
-            #     if next_message == 'PASS':
-            #         client.send(password.encode('ascii'))
-            #         if client.recv(1024).decode('ascii') == 'REFUSE':
-            #             print("Connection was refused! Wrong password!")
-            #             stop_thread = True
-            #     elif next_message == 'BAN':
-            #         print("Connection refused because of ban!")
-            #         client.close()
-            #         stop_thread = True
-            # else:
-            #     print(message)
-
         # Close connection if any errors occurred
         except:
             print("An error occurred")
@@ -101,17 +81,17 @@ def write():
 
         message = str(username) + ": " + str(input(""))
 
-
-
         # handling admin functionalities
         if message[len(username) + 2:].startswith('/'):
-            # if message[len(username) + 2:].startswith('/user_list'):
-            #     client.send("USERS".encode('ascii'))
             if username == 'admin':
                 if message[len(username) + 2:].startswith('/kick'):
                     client.send(("KICK " + message[len(username) + 2 + 6:]).encode('ascii'))
                 elif message[len(username) + 2:].startswith('/ban'):
                     client.send(("BAN " + message[len(username) + 2 + 5:]).encode('ascii'))
+                elif message[len(username) + 2:].startswith('/user_list'):
+                    client.send("USERS".encode('ascii'))
+                elif message[len(username) + 2:].startswith('/warn'):
+                    client.send(("WARN " + message[len(username) + 2 + 6:]).encode('ascii'))
             else:
                 print("Commands can only be executed by the admin")
         else:

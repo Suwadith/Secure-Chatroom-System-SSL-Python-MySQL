@@ -5,12 +5,13 @@ menu_options = {
     2: 'Register'
 }
 
-# login menu
+# print login menu options
 def print_login_menu():
     for key in menu_options.keys():
         print(key, ': ', menu_options[key])
 
 
+# handle login menu inputs
 def handle_login_menu_input():
     while (True):
         print_login_menu()
