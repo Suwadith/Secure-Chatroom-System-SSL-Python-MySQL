@@ -1,4 +1,4 @@
-import database_handler
+from lazyme import color_print
 
 menu_options = {
     1: 'Login',
@@ -7,6 +7,9 @@ menu_options = {
 
 # print login menu options
 def print_login_menu():
+    color_print("--------------------------", color='cyan')
+    color_print("Welcome to Python Chatroom", color='green')
+    color_print("--------------------------", color='cyan')
     for key in menu_options.keys():
         print(key, ': ', menu_options[key])
 

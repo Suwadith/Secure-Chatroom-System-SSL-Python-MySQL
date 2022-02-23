@@ -1,6 +1,7 @@
 import threading
 import socket
 import ssl
+from lazyme import color_print
 
 # localhost
 import time
@@ -59,7 +60,6 @@ def handle(client):
                     name_to_ban = msg.decode('ascii')[4:]
                     ban_user(name_to_ban, client)
                     kick_user(name_to_ban)
-                    # print(name_to_ban + "has been banned!")
                 else:
                     client.send('Command was refused!'.encode('ascii'))
 
@@ -115,61 +115,68 @@ def handle(client):
 def receive():
     while True:
         client_socket, address = server.accept()
-        print("Connected to " + str(address))
+        color_print("Connected to " + str(address), color='cyan')
         log_writer.write_to_log("Connected to " + str(address))
 
         # wrapping sockets using ssl socket objects
         client = context.wrap_socket(client_socket, server_side=True)
 
-        # Get the option to login/register from the client and store it
-        client.send("LOGIN_REGISTER".encode('ascii'))
-        login_or_register = client.recv(1024).decode('ascii')
+        try:
+            # Get the option to login/register from the client and store it
+            client.send("LOGIN_REGISTER".encode('ascii'))
+            login_or_register = client.recv(1024).decode('ascii')
 
-        # Get the username from the client and store it
-        client.send("USERNAME".encode('ascii'))
-        username = client.recv(1024).decode('ascii')
 
-        # Get the password from the client and store it
-        client.send("PASS".encode('ascii'))
-        password = client.recv(1024).decode('ascii')
+            # Get the username from the client and store it
+            client.send("USERNAME".encode('ascii'))
+            username = client.recv(1024).decode('ascii')
 
-        # Handling login or registration process on the serverside
-        if login_or_register == '1':
-            result = database_handler.check_password(username, password)
-            if result:
-                usernames.append(username)
-                clients.append(client)
-            else:
-                client.send("REFUSE".encode('ascii'))
-                client.close()
-                continue
-        elif login_or_register == '2':
-            result = database_handler.register_user(username, password, 'user')
-            if result:
-                usernames.append(username)
-                clients.append(client)
-            else:
-                client.send("REG_ERROR".encode('ascii'))
-                client.close()
-                continue
+            # Get the password from the client and store it
+            client.send("PASS".encode('ascii'))
+            password = client.recv(1024).decode('ascii')
 
-        # checking if the username has already been added in the DB ban list
-        username_ban_check = database_handler.check_username_banned(username)
-        # checking if the username has already been added in the DB ban list
-        ip_ban_check = database_handler.check_ip_banned(client.getpeername()[0])
 
-        # if IP and username are same then the user gets kicked
-        # (Using an 'or' condition will make both the IP and the username banned)
-        if username_ban_check and ip_ban_check:
-            kick_user(username)
 
-        # Announce the username of the client who has just joined the chatroom to everyone
-        print("Username of the client is " + str(username))
+            # Handling login or registration process on the serverside
+            if login_or_register == '1':
+                result = database_handler.check_password(username, password)
+                if result:
+                    usernames.append(username)
+                    clients.append(client)
+                else:
+                    client.send("REFUSE".encode('ascii'))
+                    client.close()
+                    continue
+            elif login_or_register == '2':
+                result = database_handler.register_user(username, password, 'user')
+                if result:
+                    usernames.append(username)
+                    clients.append(client)
+                else:
+                    client.send("REG_ERROR".encode('ascii'))
+                    client.close()
+                    continue
 
-        # log server messages into a txt file
-        log_writer.write_to_log("Username of the client is " + str(username))
-        announce((str(username) + " joined the chatroom").encode('ascii'))
-        client.send("Connected to the server".encode('ascii'))
+            # checking if the username has already been added in the DB ban list
+            username_ban_check = database_handler.check_username_banned(username)
+            # checking if the username has already been added in the DB ban list
+            ip_ban_check = database_handler.check_ip_banned(client.getpeername()[0])
+
+            # if IP and username are same then the user gets kicked
+            # (Using an 'or' condition will make both the IP and the username banned)
+            if username_ban_check and ip_ban_check:
+                kick_user(username)
+
+            # Announce the username of the client who has just joined the chatroom to everyone
+            color_print("Username of the client is " + str(username), color='cyan')
+
+            # log server messages into a txt file
+            log_writer.write_to_log("Username of the client is " + str(username))
+            announce((str(username) + " joined the chatroom").encode('ascii'))
+            client.send("Connected to the server".encode('ascii'))
+
+        except:
+            client.close()
 
         # Handle multiple client requests at the same time by using threads simultaneously
         thread = threading.Thread(target=handle, args=(client,))
@@ -186,7 +193,7 @@ def kick_user(username):
         usernames.remove(username)
         client_to_kick.close()
         announce((username + " was kicked by the admin!").encode('ascii'))
-        print(username + " was kicked by the admin!")
+        color_print(username + " was kicked by the admin!", color='red')
         log_writer.write_to_log(username + " was kicked by the admin!")
 
 
@@ -194,10 +201,10 @@ def kick_user(username):
 def ban_user(username, client):
     database_handler.ban_user(username, client.getpeername()[0])
     announce((username + ", " + client.getpeername()[0] + " was banned by the admin!").encode('ascii'))
-    print(username + ", " + client.getpeername()[0] + " was banned by the admin!")
+    color_print(username + ", " + client.getpeername()[0] + " was banned by the admin!", color='red')
     log_writer.write_to_log(username + ", " + client.getpeername()[0] + " was banned by the admin!")
 
 
-print("Server is up and running...")
+color_print("Server is up and running...", color='green')
 log_writer.write_to_log("Server is up and running...")
 receive()
