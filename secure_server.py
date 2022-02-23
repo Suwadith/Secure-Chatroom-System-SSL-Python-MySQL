@@ -83,11 +83,13 @@ def handle(client):
                 rec_username = msg.decode('ascii')[8:].split(" ", 1)[0]
                 pvt_msg = msg.decode('ascii')[8:].split(" ", 1)[1]
 
+                if rec_username in usernames:
+                    name_index = usernames.index(rec_username)
+                    rec_client = clients[name_index]
 
-
-                # print(sen_username)
-                # print(rec_username)
-                # print(pvt_msg)
+                    rec_client.send(('** ' + sen_username + ': ' + pvt_msg + ' **').encode('ascii'))
+                else:
+                    client.send('Username was not found'.encode('ascii'))
 
             else:
                 # announce the message to everyone on the chatroom
