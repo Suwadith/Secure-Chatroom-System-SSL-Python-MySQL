@@ -341,3 +341,25 @@
 2022-02-24 16:50:24.909260 - Rishan, 127.0.0.1 was banned by the admin!
 2022-02-24 16:50:24.914124 - Rishan was kicked by the admin!
 2022-02-24 16:50:35.048912 - Connected to ('127.0.0.1', 59107)
+2022-02-24 18:52:41.625489 - Suwadith was kicked by the admin!
+2022-02-24 18:52:46.439991 - Connected to ('127.0.0.1', 56244)
+2022-02-24 18:52:56.317557 - Username of the client is Suwadith
+2022-02-24 19:08:30.554302 - Server is up and running...
+2022-02-24 19:08:32.901902 - Connected to ('127.0.0.1', 65318)
+2022-02-24 19:08:36.861590 - Username of the client is admin
+2022-02-24 19:08:38.812024 - Connected to ('127.0.0.1', 65323)
+2022-02-24 19:09:00.907939 - Username of the client is Suwadith
+2022-02-24 19:09:06.969738 - Connected to ('127.0.0.1', 65335)
+2022-02-24 19:09:18.175257 - Username of the client is Rishan
+2022-02-24 19:10:07.167564 - Connected to ('127.0.0.1', 65363)
+2022-02-24 19:10:12.287216 - Username of the client is Rishan
+2022-02-24 19:17:41.677275 - Server is up and running...
+2022-02-24 19:17:44.355648 - Connected to ('127.0.0.1', 65516)
+2022-02-24 19:18:01.488654 - Connected to ('127.0.0.1', 65523)
+2022-02-24 19:18:12.216453 - Username of the client is admin
+2022-02-24 19:18:15.407944 - Connected to ('127.0.0.1', 65531)
+2022-02-24 19:18:24.262974 - Username of the client is SUwadith
+2022-02-24 19:18:31.822761 - Connected to ('127.0.0.1', 49157)
+2022-02-24 19:18:50.644896 - SUwadith was kicked by the admin!
+2022-02-24 19:19:05.717047 - Connected to ('127.0.0.1', 49161)
+2022-02-24 19:19:11.858790 - Username of the client is SUwadith

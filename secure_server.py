@@ -156,9 +156,13 @@ def receive():
                 ip_ban_check = database_handler.check_ip_banned(client.getpeername()[0])
 
                 if not (username_ban_check and ip_ban_check):
-                    if result and username not in usernames:
+                    if result and (username not in usernames):
                         usernames.append(username)
                         clients.append(client)
+                    else:
+                        client.send("REFUSE".encode('ascii'))
+                        client.close()
+                        continue
                 else:
                     client.send("REFUSE".encode('ascii'))
                     client.close()
