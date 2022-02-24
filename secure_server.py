@@ -1,13 +1,12 @@
+import os
 import threading
 import socket
 import ssl
 from lazyme import color_print
-
-# localhost
-import time
-
 import database_handler
 import log_writer
+
+os.system("")
 
 host_address = '127.0.0.1'
 port_number = 55656

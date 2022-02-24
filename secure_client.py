@@ -1,13 +1,13 @@
+import os
 import socket
 import threading
 import ssl
 from lazyme import color_print
-
-# Same host address and the port number which were declared in the server
-import time
-
 import login_handler
 
+os.system("")
+
+# Same host address and the port number which were declared in the server
 host_address = '127.0.0.1'
 port_number = 55656
 server_hostname = 'example.com'
