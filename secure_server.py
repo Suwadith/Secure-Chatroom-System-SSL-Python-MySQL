@@ -49,7 +49,10 @@ def handle(client):
             if msg.decode('ascii').startswith('KICK'):
                 if usernames[clients.index(client)] == 'admin':
                     name_to_kick = msg.decode('ascii')[5:]
-                    kick_user(name_to_kick)
+                    if name_to_kick in usernames:
+                        kick_user(name_to_kick)
+                    else:
+                        client.send('Username was not found'.encode('ascii'))
                 else:
                     client.send('Command was refused!'.encode('ascii'))
 
@@ -57,8 +60,11 @@ def handle(client):
             elif msg.decode('ascii').startswith('BAN'):
                 if usernames[clients.index(client)] == 'admin':
                     name_to_ban = msg.decode('ascii')[4:]
-                    ban_user(name_to_ban, client)
-                    kick_user(name_to_ban)
+                    if name_to_ban in usernames:
+                        ban_user(name_to_ban, client)
+                        kick_user(name_to_ban)
+                    else:
+                        client.send('Username was not found'.encode('ascii'))
                 else:
                     client.send('Command was refused!'.encode('ascii'))
 
@@ -66,9 +72,12 @@ def handle(client):
             elif msg.decode('ascii').startswith('WARN'):
                 if usernames[clients.index(client)] == 'admin':
                     warn_username = msg.decode('ascii')[5:]
-                    name_index = usernames.index(warn_username)
-                    warn_client = clients[name_index]
-                    warn_client.send('You have been warned by the admin!!!!'.encode('ascii'))
+                    if warn_username in usernames:
+                        name_index = usernames.index(warn_username)
+                        warn_client = clients[name_index]
+                        warn_client.send('You have been warned by the admin!!!!'.encode('ascii'))
+                    else:
+                        client.send('Username was not found'.encode('ascii'))
                 else:
                     client.send('Command was refused!'.encode('ascii'))
 
@@ -77,6 +86,7 @@ def handle(client):
                 for username in usernames:
                     client.send(username.encode('ascii'))
 
+            # sending private message to a particular client
             elif msg.decode('ascii').startswith('PRIVATE'):
                 sen_username = usernames[clients.index(client)]
                 rec_username = msg.decode('ascii')[8:].split(" ", 1)[0]
@@ -124,7 +134,6 @@ def receive():
             # Get the option to login/register from the client and store it
             client.send("LOGIN_REGISTER".encode('ascii'))
             login_or_register = client.recv(1024).decode('ascii')
-
 
             # Get the username from the client and store it
             client.send("USERNAME".encode('ascii'))
