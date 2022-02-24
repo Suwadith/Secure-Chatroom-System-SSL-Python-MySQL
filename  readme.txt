@@ -4,7 +4,7 @@ Software requirements
 
 
 Setting up the MySQL DB
-    1. create a user on the db with username='admin' and password='admin'
+    1. create a user on the db with username='admin' and password='admin' with all the admin/root privileges
     2. create a database named 'chatroom'
     3. import the resources/chatroom.sql file on to the database
     4. make sure the server is up and running and using the default port
