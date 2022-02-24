@@ -66,10 +66,10 @@ def handle(client):
             # handling warning request from admin
             elif msg.decode('ascii').startswith('WARN'):
                 if usernames[clients.index(client)] == 'admin':
-                    username = msg.decode('ascii')[5:]
-                    name_index = usernames.index(username)
-                    client = clients[name_index]
-                    client.send('You have been warned by the admin!!!!'.encode('ascii'))
+                    warn_username = msg.decode('ascii')[5:]
+                    name_index = usernames.index(warn_username)
+                    warn_client = clients[name_index]
+                    warn_client.send('You have been warned by the admin!!!!'.encode('ascii'))
                 else:
                     client.send('Command was refused!'.encode('ascii'))
 
